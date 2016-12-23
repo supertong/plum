@@ -18,7 +18,7 @@ function startBot() {
   fi
 }
 
-cd /home/tongli/Git/plum && git pull
+cd /home/tongli/Git/plum && git pull --quiet
 COMMIT_HASH=$(git rev-parse --short=8 HEAD)
 
 if [ ! -f $WORKING_DIR/release.txt ]; then
