@@ -1,29 +1,34 @@
 #!/bin/bash -e
 
+NODE_EXEC=/home/tongli/.nvm/versions/node/v7.3.0/bin/node
+NPM_EXEC=/home/tongli/.nvm/versions/node/v7.3.0/bin/npm
+WORKING_DIR=/home/tongli/Git/plum
+
 function startBot() {
-  if [ -f pid.txt ]; then
+  $NPM_EXEC install
+  if [ -f $WORKING_DIR/pid.txt ]; then
     # Restart the bot
     echo "Restarting the bot"
-    kill -2 $(cat pid.txt)
+    kill -2 $(cat $WORKING_DIR/pid.txt)
   else
     # Start the bot
     echo "Starting a new bot"
-    /home/tongli/.nvm/versions/node/v7.3.0/bin/node index.js &
+    $NODE_EXEC index.js &
     echo $! > pid.txt
   fi
 }
 
-cd /home/tongli/Git/plum && git pull && npm install
+cd /home/tongli/Git/plum && git pull
 COMMIT_HASH=$(git rev-parse --short=8 HEAD)
 
-if [ ! -f release.txt ]; then
+if [ ! -f $WORKING_DIR/release.txt ]; then
   # This should be the first run
-  echo $COMMIT_HASH > release.txt
+  echo $COMMIT_HASH > $WORKING_DIR/release.txt
   startBot
   exit 0
 fi
 
-LAST_COMMIT_HASH=$(cat release.txt)
+LAST_COMMIT_HASH=$(cat $WORKING_DIR/release.txt)
 
 if [ "$COMMIT_HASH" == "$LAST_COMMIT_HASH" ]; then
   exit 0
