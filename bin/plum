@@ -18,6 +18,13 @@ function startBot() {
   fi
 }
 
+function botUp() {
+  # Make sure bot is up and running
+  if [ ! -f $WORKING_DIR/pid.txt || ! $(kill -0 $(cat $WORKING_DIR/pid.txt)) ]; then
+    startBot()
+  fi
+}
+
 cd /home/tongli/Git/plum && git pull --quiet
 COMMIT_HASH=$(git rev-parse --short=8 HEAD)
 
@@ -31,6 +38,7 @@ fi
 LAST_COMMIT_HASH=$(cat $WORKING_DIR/release.txt)
 
 if [ "$COMMIT_HASH" == "$LAST_COMMIT_HASH" ]; then
+  botUp
   exit 0
 fi
 
