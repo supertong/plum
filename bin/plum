@@ -3,10 +3,12 @@
 function startBot() {
   if [ -f pid.txt ]; then
     # Restart the bot
+    echo "Restarting the bot"
     kill -2 $(cat pid.txt)
   else
     # Start the bot
-    SLACK_BOT_TOKEN="xoxb-119540805527-bP3JoTNBQ65Fl07gQTUS58AL" /home/tongli/.nvm/versions/node/v7.3.0/bin/node index.js &
+    echo "Starting a new bot"
+    /home/tongli/.nvm/versions/node/v7.3.0/bin/node index.js &
     echo $! > pid.txt
   fi
 }
