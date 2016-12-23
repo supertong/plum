@@ -6,7 +6,7 @@ WORKING_DIR=/home/tongli/Git/plum
 
 function startBot() {
   $NPM_EXEC install
-  if [ botUp ]; then
+  if [ $(botUp) ]; then
     # Restart the bot
     echo "Restarting the bot"
     kill -2 $(cat $WORKING_DIR/pid.txt)
@@ -40,7 +40,7 @@ fi
 
 LAST_COMMIT_HASH=$(cat $WORKING_DIR/release.txt)
 
-if [ "$COMMIT_HASH" == "$LAST_COMMIT_HASH" && botUp ]; then
+if [ "$COMMIT_HASH" == "$LAST_COMMIT_HASH" && $(botUp) ]; then
   exit 0
 fi
 
