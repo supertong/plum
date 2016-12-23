@@ -6,7 +6,7 @@ WORKING_DIR=/home/tongli/Git/plum
 
 function startBot() {
   $NPM_EXEC install
-  if [ -f $WORKING_DIR/pid.txt && $(kill -0 $(cat $WORKING_DIR/pid.txt))]; then
+  if [ botUp ]; then
     # Restart the bot
     echo "Restarting the bot"
     kill -2 $(cat $WORKING_DIR/pid.txt)
@@ -21,8 +21,11 @@ function startBot() {
 function botUp() {
   # Make sure bot is up and running
   if [ ! -f $WORKING_DIR/pid.txt || ! $(kill -0 $(cat $WORKING_DIR/pid.txt)) ]; then
-    startBot()
+    echo "Bot up checking failed."
+    rm $WORKING_DIR/pid.txt > /dev/null 2>&1
+    return 1
   fi
+  return 0
 }
 
 cd /home/tongli/Git/plum && git pull --quiet
@@ -37,8 +40,7 @@ fi
 
 LAST_COMMIT_HASH=$(cat $WORKING_DIR/release.txt)
 
-if [ "$COMMIT_HASH" == "$LAST_COMMIT_HASH" ]; then
-  botUp
+if [ "$COMMIT_HASH" == "$LAST_COMMIT_HASH" && botUp ]; then
   exit 0
 fi
 
