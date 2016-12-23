@@ -1,0 +1,30 @@
+#!/bin/bash -e
+
+function startBot() {
+  if [ -f pid.txt ]; then
+    # Restart the bot
+    kill -2 $(cat pid.txt)
+  else
+    # Start the bot
+    SLACK_BOT_TOKEN="xoxb-119540805527-bP3JoTNBQ65Fl07gQTUS58AL" /home/tongli/.nvm/versions/node/v7.3.0/bin/node index.js &
+    echo $! > pid.txt
+  fi
+}
+
+cd /home/tongli/Git/plum && git pull && npm install
+COMMIT_HASH=$(git rev-parse --short=8 HEAD)
+
+if [ ! -f release.txt ]; then
+  # This should be the first run
+  echo $COMMIT_HASH > release.txt
+  startBot
+  exit 0
+fi
+
+LAST_COMMIT_HASH=$(cat release.txt)
+
+if [ "$COMMIT_HASH" == "$LAST_COMMIT_HASH" ]; then
+  exit 0
+fi
+
+startBot
